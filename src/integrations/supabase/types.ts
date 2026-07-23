@@ -14,7 +14,77 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      confirmations: {
+        Row: {
+          created_at: string
+          device_id: string
+          id: string
+          outage_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_id: string
+          id?: string
+          outage_id: string
+        }
+        Update: {
+          created_at?: string
+          device_id?: string
+          id?: string
+          outage_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "confirmations_outage_id_fkey"
+            columns: ["outage_id"]
+            isOneToOne: false
+            referencedRelation: "outages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      outages: {
+        Row: {
+          confirmations_count: number
+          created_at: string
+          delegation_id: string
+          description: string | null
+          governorate_id: string
+          id: string
+          latitude: number | null
+          longitude: number | null
+          problem_type: Database["public"]["Enums"]["problem_type"]
+          reporter_device: string
+          start_time: string
+        }
+        Insert: {
+          confirmations_count?: number
+          created_at?: string
+          delegation_id: string
+          description?: string | null
+          governorate_id: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          problem_type: Database["public"]["Enums"]["problem_type"]
+          reporter_device: string
+          start_time?: string
+        }
+        Update: {
+          confirmations_count?: number
+          created_at?: string
+          delegation_id?: string
+          description?: string | null
+          governorate_id?: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          problem_type?: Database["public"]["Enums"]["problem_type"]
+          reporter_device?: string
+          start_time?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +93,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      problem_type: "water_cut" | "low_pressure" | "contamination" | "leak"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +220,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      problem_type: ["water_cut", "low_pressure", "contamination", "leak"],
+    },
   },
 } as const
