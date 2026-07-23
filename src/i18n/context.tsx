@@ -1,10 +1,11 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { translations, type Lang } from "./translations";
 
+type T = (typeof translations)["fr"];
 type Ctx = {
   lang: Lang;
   setLang: (l: Lang) => void;
-  t: (typeof translations)["fr"];
+  t: T;
   dir: "ltr" | "rtl";
 };
 
