@@ -10,6 +10,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 import { I18nProvider } from "@/i18n/context";
 import { AppHeader } from "@/components/AppHeader";
+import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -133,6 +134,7 @@ function RootComponent() {
             <Outlet />
           </main>
         </div>
+        <Toaster position="top-center" richColors />
       </I18nProvider>
     </QueryClientProvider>
   );
