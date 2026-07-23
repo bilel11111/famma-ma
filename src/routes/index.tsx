@@ -17,7 +17,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Famma Ma — Live Water Outage Map for Tunisia" },
       {
         property: "og:description",
-        content: "Live map of water outages in Tunisia. Community-powered, bilingual (AR/FR).",
+        content: "Live crowd-sourced map of water outages across Tunisia's 24 governorates. Report, confirm, and track cuts, low pressure, contamination and leaks.",
       },
     ],
   }),

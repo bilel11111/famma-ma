@@ -80,26 +80,29 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Famma Ma — Tunisia Water Outage Tracker" },
+      { title: "Famma Ma — Live Water Outage Map for Tunisia" },
       {
         name: "description",
         content:
-          "Track and report water outages across Tunisia in real time. Bilingual (Arabic / French) community-powered map and live feed.",
+          "Live crowd-sourced map of water outages across Tunisia's 24 governorates. Report, confirm, and track cuts, low pressure, contamination and leaks.",
       },
-      { property: "og:title", content: "Famma Ma — Tunisia Water Outage Tracker" },
+      { property: "og:title", content: "Famma Ma — Live Water Outage Map for Tunisia" },
       {
         property: "og:description",
-        content: "Real-time crowd-sourced water outage map for Tunisia.",
+        content: "Live crowd-sourced map of water outages across Tunisia's 24 governorates. Report, confirm, and track cuts, low pressure, contamination and leaks.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Famma Ma — Live Water Outage Map for Tunisia" },
+      { name: "twitter:description", content: "Live crowd-sourced map of water outages across Tunisia's 24 governorates. Report, confirm, and track cuts, low pressure, contamination and leaks." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/2f1a33af-bbf4-47f6-ba3b-a48e06e32328" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/2f1a33af-bbf4-47f6-ba3b-a48e06e32328" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
   shellComponent: RootShell,
