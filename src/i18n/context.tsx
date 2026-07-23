@@ -32,7 +32,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   return (
     <I18nContext.Provider
-      value={{ lang, setLang, t: translations[lang], dir: lang === "ar" ? "rtl" : "ltr" }}
+      value={{ lang, setLang, t: translations[lang] as T, dir: lang === "ar" ? "rtl" : "ltr" }}
     >
       {children}
     </I18nContext.Provider>
