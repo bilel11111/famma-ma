@@ -1,23 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AlertTriangle, Droplets, ThumbsUp, TrendingUp } from "lucide-react";
+import { useState } from "react";
+import { AlertTriangle, Droplets, Flame, ThumbsUp, TrendingUp } from "lucide-react";
 import { ClientOnlyMap } from "@/components/ClientOnlyMap";
 import { useI18n } from "@/i18n/context";
 import { useOutages } from "@/lib/outages";
+import { useFires } from "@/lib/fires";
 import { TUNISIAN_GOVERNORATES, PROBLEM_TYPES, type ProblemType } from "@/data/tunisia-divisions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Famma Ma — Live Water Outage Map for Tunisia" },
+      { title: "Famma Ma — Live Water & Fire Map for Tunisia" },
       {
         name: "description",
         content:
-          "Live crowd-sourced map of water outages across Tunisia's 24 governorates. Report, confirm, and track cuts, low pressure, contamination and leaks.",
+          "Live crowd-sourced map of water outages plus NASA FIRMS active fires across Tunisia's 24 governorates.",
       },
-      { property: "og:title", content: "Famma Ma — Live Water Outage Map for Tunisia" },
+      { property: "og:title", content: "Famma Ma — Live Water & Fire Map for Tunisia" },
       {
         property: "og:description",
-        content: "Live crowd-sourced map of water outages across Tunisia's 24 governorates. Report, confirm, and track cuts, low pressure, contamination and leaks.",
+        content:
+          "Live crowd-sourced map of water outages plus NASA FIRMS active fires across Tunisia's 24 governorates.",
       },
     ],
   }),
@@ -27,6 +30,12 @@ export const Route = createFileRoute("/")({
 function HomePage() {
   const { t, lang } = useI18n();
   const { outages, stats } = useOutages();
+  const [showFires, setShowFires] = useState(true);
+  const { fires, updatedAt } = useFires(showFires);
+
+  const fireLabel = lang === "ar" ? "حرائق نشطة (24س)" : "Feux actifs (24h)";
+  const toggleLabel = lang === "ar" ? "الحرائق" : "Feux";
+  const sourceLabel = lang === "ar" ? "المصدر: ناسا FIRMS" : "Source : NASA FIRMS";
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 px-4 py-6">
@@ -35,7 +44,7 @@ function HomePage() {
         <p className="mt-1 text-sm text-muted-foreground">{t.home.subtitle}</p>
       </header>
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Kpi
           label={t.home.activeOutages}
           value={stats.active}
@@ -54,20 +63,46 @@ function HomePage() {
           icon={<ThumbsUp className="h-4 w-4" />}
           tone="primary"
         />
+        <Kpi
+          label={fireLabel}
+          value={fires.length}
+          icon={<Flame className="h-4 w-4" />}
+          tone="high"
+        />
       </div>
 
       <section className="overflow-hidden rounded-2xl border border-border bg-card shadow-card">
-        <div className="flex items-center justify-between border-b border-border px-4 py-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3">
           <div className="flex items-center gap-2 text-sm font-semibold">
             <Droplets className="h-4 w-4 text-primary" />
             {t.home.liveMap}
           </div>
-          <Legend />
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => setShowFires((v) => !v)}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
+                showFires
+                  ? "border-[oklch(0.6_0.24_27)] bg-[oklch(0.6_0.24_27)]/10 text-[oklch(0.55_0.24_27)]"
+                  : "border-border bg-card text-muted-foreground hover:bg-muted"
+              }`}
+              aria-pressed={showFires}
+            >
+              <Flame className="h-3.5 w-3.5" />
+              {toggleLabel} {showFires && fires.length > 0 && `(${fires.length})`}
+            </button>
+            <Legend />
+          </div>
         </div>
         <div className="h-[420px] w-full sm:h-[520px]">
-          <ClientOnlyMap outages={outages} />
+          <ClientOnlyMap outages={outages} fires={fires} showFires={showFires} />
         </div>
+        {showFires && updatedAt && (
+          <div className="border-t border-border px-4 py-2 text-[11px] text-muted-foreground">
+            {sourceLabel} · {new Date(updatedAt).toLocaleString(lang === "ar" ? "ar-TN" : "fr-TN")}
+          </div>
+        )}
       </section>
+
 
       <div className="grid gap-4 md:grid-cols-2">
         <Card title={t.home.topAffected}>

@@ -13,6 +13,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ReportRouteImport } from './routes/report'
 import { Route as FeedRouteImport } from './routes/feed'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicFiresRouteImport } from './routes/api/public/fires'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -34,18 +35,25 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicFiresRoute = ApiPublicFiresRouteImport.update({
+  id: '/api/public/fires',
+  path: '/api/public/fires',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/feed': typeof FeedRoute
   '/report': typeof ReportRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/public/fires': typeof ApiPublicFiresRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/feed': typeof FeedRoute
   '/report': typeof ReportRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/public/fires': typeof ApiPublicFiresRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,20 @@ export interface FileRoutesById {
   '/feed': typeof FeedRoute
   '/report': typeof ReportRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/public/fires': typeof ApiPublicFiresRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/feed' | '/report' | '/sitemap.xml'
+  fullPaths: '/' | '/feed' | '/report' | '/sitemap.xml' | '/api/public/fires'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/feed' | '/report' | '/sitemap.xml'
-  id: '__root__' | '/' | '/feed' | '/report' | '/sitemap.xml'
+  to: '/' | '/feed' | '/report' | '/sitemap.xml' | '/api/public/fires'
+  id:
+    | '__root__'
+    | '/'
+    | '/feed'
+    | '/report'
+    | '/sitemap.xml'
+    | '/api/public/fires'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +82,7 @@ export interface RootRouteChildren {
   FeedRoute: typeof FeedRoute
   ReportRoute: typeof ReportRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiPublicFiresRoute: typeof ApiPublicFiresRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +115,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/fires': {
+      id: '/api/public/fires'
+      path: '/api/public/fires'
+      fullPath: '/api/public/fires'
+      preLoaderRoute: typeof ApiPublicFiresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,17 +130,8 @@ const rootRouteChildren: RootRouteChildren = {
   FeedRoute: FeedRoute,
   ReportRoute: ReportRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiPublicFiresRoute: ApiPublicFiresRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
