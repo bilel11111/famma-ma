@@ -54,10 +54,11 @@ function json(status: number, body: unknown) {
 }
 
 async function run() {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.LOVABLE_API_KEY;
   const supabaseUrl = process.env.SUPABASE_URL!;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-  if (!apiKey) throw new Error("GEMINI_API_KEY not configured");
+  if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
+
 
   // 1. Fetch RSS
   const rssRes = await fetch("https://www.babnet.net/feed.php", {
