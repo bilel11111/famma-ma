@@ -5,14 +5,23 @@ import { TUNISIAN_GOVERNORATES } from "@/data/tunisia-divisions";
 import { severityFromCount, severityColor } from "@/lib/severity";
 import { useI18n } from "@/i18n/context";
 import type { Outage } from "@/lib/outages";
+import type { Fire } from "@/lib/fires";
 
-export default function OutageMap({ outages }: { outages: Outage[] }) {
+export default function OutageMap({
+  outages,
+  fires = [],
+  showFires = true,
+}: {
+  outages: Outage[];
+  fires?: Fire[];
+  showFires?: boolean;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
+  const firesLayerRef = useRef<L.LayerGroup | null>(null);
   const { lang } = useI18n();
 
-  // Aggregate outages per governorate
   const aggregates = useMemo(() => {
     const counts = new Map<string, number>();
     for (const o of outages) {
@@ -33,18 +42,21 @@ export default function OutageMap({ outages }: { outages: Outage[] }) {
       scrollWheelZoom: true,
     });
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "&copy; OpenStreetMap",
+      attribution: "&copy; OpenStreetMap &middot; Fires: NASA FIRMS",
       maxZoom: 18,
     }).addTo(map);
     mapRef.current = map;
     layerRef.current = L.layerGroup().addTo(map);
+    firesLayerRef.current = L.layerGroup().addTo(map);
     return () => {
       map.remove();
       mapRef.current = null;
       layerRef.current = null;
+      firesLayerRef.current = null;
     };
   }, []);
 
+  // Outage markers
   useEffect(() => {
     const layer = layerRef.current;
     if (!layer) return;
@@ -69,6 +81,37 @@ export default function OutageMap({ outages }: { outages: Outage[] }) {
       );
     }
   }, [aggregates, lang]);
+
+  // Fire markers
+  useEffect(() => {
+    const map = mapRef.current;
+    const layer = firesLayerRef.current;
+    if (!map || !layer) return;
+    layer.clearLayers();
+    if (!showFires) {
+      if (map.hasLayer(layer)) map.removeLayer(layer);
+      return;
+    }
+    if (!map.hasLayer(layer)) map.addLayer(layer);
+    for (const f of fires) {
+      const size = Math.max(8, Math.min(20, 8 + Math.log2(1 + f.frp) * 2));
+      const icon = L.divIcon({
+        className: "",
+        html: `<div class="fire-marker" style="width:${size}px;height:${size}px"></div>`,
+        iconSize: [size, size],
+        iconAnchor: [size / 2, size / 2],
+      });
+      const marker = L.marker([f.lat, f.lon], { icon }).addTo(layer);
+      const label = lang === "ar" ? "حريق نشط" : "Feu actif";
+      const conf = lang === "ar" ? "الثقة" : "Confiance";
+      const power = lang === "ar" ? "الطاقة" : "Puissance";
+      marker.bindPopup(
+        `<div style="font-weight:600;font-size:13px;color:oklch(0.55 0.24 30)">🔥 ${label}</div>
+         <div style="font-size:12px;color:#666">${f.acq_date} ${f.acq_time}</div>
+         <div style="font-size:11px;color:#666">${power}: ${f.frp.toFixed(1)} MW · ${conf}: ${f.confidence}</div>`
+      );
+    }
+  }, [fires, showFires, lang]);
 
   return <div ref={containerRef} className="h-full w-full" />;
 }
