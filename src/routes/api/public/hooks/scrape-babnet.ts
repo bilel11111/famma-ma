@@ -198,44 +198,40 @@ Règles strictes:
 - Si tu ne peux pas identifier la délégation, choisis la première délégation du gouvernorat.
 - Si aucun article n'est pertinent, retourne {"outages":[]}.`;
 
-  // Google Generative Language API — Gemini 3 Flash Preview
-  const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent";
+  // Lovable AI Gateway — OpenAI-compatible endpoint, google/gemini-3-flash-preview
+  const url = "https://ai.gateway.lovable.dev/v1/chat/completions";
   const body = {
-    contents: [{ parts: [{ text: prompt }] }],
-    generationConfig: {
-      temperature: 0.1,
-      responseMimeType: "application/json",
-    },
+    model: "google/gemini-3-flash-preview",
+    messages: [
+      { role: "system", content: "You extract structured JSON. Return only valid JSON, no markdown, no prose." },
+      { role: "user", content: prompt },
+    ],
+    response_format: { type: "json_object" },
+    temperature: 0.1,
   };
 
-  let res = await fetch(`${url}?key=${encodeURIComponent(apiKey)}`, {
+  const res = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
     body: JSON.stringify(body),
   });
-
-  // Fallback: some Google tokens require Bearer auth instead of ?key=
-  if (res.status === 401 || res.status === 403) {
-    res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify(body),
-    });
-  }
 
   if (!res.ok) {
     const t = await res.text();
     console.error("[scrape-babnet] gemini error", res.status, t);
+    if (res.status === 429) throw new Error("Rate limit reached — try again later");
+    if (res.status === 402) throw new Error("AI credits exhausted — upgrade plan");
     throw new Error(`Gemini ${res.status}: ${t.slice(0, 200)}`);
   }
 
   const data = (await res.json()) as {
-    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+    choices?: Array<{ message?: { content?: string } }>;
   };
-  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+  const raw = data.choices?.[0]?.message?.content ?? "";
+
 
   let parsed: { outages?: ExtractedOutage[] };
   try {
