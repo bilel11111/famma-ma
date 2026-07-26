@@ -14,6 +14,7 @@ import { Route as ReportRouteImport } from './routes/report'
 import { Route as FeedRouteImport } from './routes/feed'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiPublicFiresRouteImport } from './routes/api/public/fires'
+import { Route as ApiPublicHooksScrapeBabnetRouteImport } from './routes/api/public/hooks/scrape-babnet'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -40,6 +41,12 @@ const ApiPublicFiresRoute = ApiPublicFiresRouteImport.update({
   path: '/api/public/fires',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksScrapeBabnetRoute =
+  ApiPublicHooksScrapeBabnetRouteImport.update({
+    id: '/api/public/hooks/scrape-babnet',
+    path: '/api/public/hooks/scrape-babnet',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +54,7 @@ export interface FileRoutesByFullPath {
   '/report': typeof ReportRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/public/fires': typeof ApiPublicFiresRoute
+  '/api/public/hooks/scrape-babnet': typeof ApiPublicHooksScrapeBabnetRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +62,7 @@ export interface FileRoutesByTo {
   '/report': typeof ReportRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/public/fires': typeof ApiPublicFiresRoute
+  '/api/public/hooks/scrape-babnet': typeof ApiPublicHooksScrapeBabnetRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,12 +71,25 @@ export interface FileRoutesById {
   '/report': typeof ReportRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/public/fires': typeof ApiPublicFiresRoute
+  '/api/public/hooks/scrape-babnet': typeof ApiPublicHooksScrapeBabnetRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/feed' | '/report' | '/sitemap.xml' | '/api/public/fires'
+  fullPaths:
+    | '/'
+    | '/feed'
+    | '/report'
+    | '/sitemap.xml'
+    | '/api/public/fires'
+    | '/api/public/hooks/scrape-babnet'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/feed' | '/report' | '/sitemap.xml' | '/api/public/fires'
+  to:
+    | '/'
+    | '/feed'
+    | '/report'
+    | '/sitemap.xml'
+    | '/api/public/fires'
+    | '/api/public/hooks/scrape-babnet'
   id:
     | '__root__'
     | '/'
@@ -75,6 +97,7 @@ export interface FileRouteTypes {
     | '/report'
     | '/sitemap.xml'
     | '/api/public/fires'
+    | '/api/public/hooks/scrape-babnet'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -83,6 +106,7 @@ export interface RootRouteChildren {
   ReportRoute: typeof ReportRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiPublicFiresRoute: typeof ApiPublicFiresRoute
+  ApiPublicHooksScrapeBabnetRoute: typeof ApiPublicHooksScrapeBabnetRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -122,6 +146,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicFiresRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/scrape-babnet': {
+      id: '/api/public/hooks/scrape-babnet'
+      path: '/api/public/hooks/scrape-babnet'
+      fullPath: '/api/public/hooks/scrape-babnet'
+      preLoaderRoute: typeof ApiPublicHooksScrapeBabnetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -131,6 +162,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReportRoute: ReportRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiPublicFiresRoute: ApiPublicFiresRoute,
+  ApiPublicHooksScrapeBabnetRoute: ApiPublicHooksScrapeBabnetRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

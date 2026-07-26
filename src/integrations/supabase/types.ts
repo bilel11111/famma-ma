@@ -55,6 +55,8 @@ export type Database = {
           longitude: number | null
           problem_type: Database["public"]["Enums"]["problem_type"]
           reporter_device: string
+          source: string
+          source_url: string | null
           start_time: string
         }
         Insert: {
@@ -68,6 +70,8 @@ export type Database = {
           longitude?: number | null
           problem_type: Database["public"]["Enums"]["problem_type"]
           reporter_device: string
+          source?: string
+          source_url?: string | null
           start_time?: string
         }
         Update: {
@@ -81,6 +85,8 @@ export type Database = {
           longitude?: number | null
           problem_type?: Database["public"]["Enums"]["problem_type"]
           reporter_device?: string
+          source?: string
+          source_url?: string | null
           start_time?: string
         }
         Relationships: []
