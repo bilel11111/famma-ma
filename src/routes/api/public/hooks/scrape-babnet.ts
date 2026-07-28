@@ -54,10 +54,11 @@ function json(status: number, body: unknown) {
 }
 
 async function run() {
-  const apiKey = process.env.LOVABLE_API_KEY;
+  const apiKey = process.env.GOOGLE_API_KEY;
   const supabaseUrl = process.env.SUPABASE_URL!;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-  if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
+  if (!apiKey) throw new Error("GOOGLE_API_KEY not configured");
+
 
 
   // 1. Fetch RSS
@@ -198,24 +199,23 @@ Règles strictes:
 - Si tu ne peux pas identifier la délégation, choisis la première délégation du gouvernorat.
 - Si aucun article n'est pertinent, retourne {"outages":[]}.`;
 
-  // Lovable AI Gateway — OpenAI-compatible endpoint, google/gemini-3-flash-preview
-  const url = "https://ai.gateway.lovable.dev/v1/chat/completions";
+  // Google Generative Language API — direct call with GOOGLE_API_KEY
+  const model = "gemini-2.5-flash";
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
   const body = {
-    model: "google/gemini-3-flash-preview",
-    messages: [
-      { role: "system", content: "You extract structured JSON. Return only valid JSON, no markdown, no prose." },
-      { role: "user", content: prompt },
-    ],
-    response_format: { type: "json_object" },
-    temperature: 0.1,
+    contents: [{ role: "user", parts: [{ text: prompt }] }],
+    systemInstruction: {
+      parts: [{ text: "You extract structured JSON. Return only valid JSON, no markdown, no prose." }],
+    },
+    generationConfig: {
+      temperature: 0.1,
+      responseMimeType: "application/json",
+    },
   };
 
   const res = await fetch(url, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
 
@@ -223,14 +223,14 @@ Règles strictes:
     const t = await res.text();
     console.error("[scrape-babnet] gemini error", res.status, t);
     if (res.status === 429) throw new Error("Rate limit reached — try again later");
-    if (res.status === 402) throw new Error("AI credits exhausted — upgrade plan");
     throw new Error(`Gemini ${res.status}: ${t.slice(0, 200)}`);
   }
 
   const data = (await res.json()) as {
-    choices?: Array<{ message?: { content?: string } }>;
+    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
   };
-  const raw = data.choices?.[0]?.message?.content ?? "";
+  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+
 
 
   let parsed: { outages?: ExtractedOutage[] };

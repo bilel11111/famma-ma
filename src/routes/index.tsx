@@ -39,10 +39,23 @@ function HomePage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 px-4 py-6">
-      <header>
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{t.home.title}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t.home.subtitle}</p>
+      <header className="relative overflow-hidden rounded-3xl bg-hero-gradient px-6 py-10 text-primary-foreground shadow-elevated sm:px-10 sm:py-14">
+        <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-accent/20 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 -left-10 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
+        <div className="relative max-w-3xl">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-medium uppercase tracking-widest text-white/90 backdrop-blur">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
+            {lang === "ar" ? "بث مباشر · تونس" : "Live · Tunisie"}
+          </span>
+          <h1 className="mt-4 text-balance text-4xl font-semibold leading-tight sm:text-5xl">
+            {t.home.title}
+          </h1>
+          <p className="mt-3 max-w-xl text-balance text-sm text-white/80 sm:text-base">
+            {t.home.subtitle}
+          </p>
+        </div>
       </header>
+
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Kpi
