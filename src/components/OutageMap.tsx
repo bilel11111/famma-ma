@@ -64,11 +64,13 @@ export default function OutageMap({
     mapRef.current = map;
     layerRef.current = L.layerGroup().addTo(map);
     firesLayerRef.current = L.layerGroup().addTo(map);
+    newsLayerRef.current = L.layerGroup().addTo(map);
     return () => {
       map.remove();
       mapRef.current = null;
       layerRef.current = null;
       firesLayerRef.current = null;
+      newsLayerRef.current = null;
     };
   }, []);
 
