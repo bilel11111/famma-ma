@@ -11,20 +11,26 @@ export default function OutageMap({
   outages,
   fires = [],
   showFires = true,
+  showNews = true,
 }: {
   outages: Outage[];
   fires?: Fire[];
   showFires?: boolean;
+  showNews?: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
   const firesLayerRef = useRef<L.LayerGroup | null>(null);
+  const newsLayerRef = useRef<L.LayerGroup | null>(null);
   const { lang } = useI18n();
+
+  const newsItems = useMemo(() => outages.filter((o) => !!o.source_url), [outages]);
 
   const aggregates = useMemo(() => {
     const counts = new Map<string, number>();
     for (const o of outages) {
+      if (o.source_url) continue;
       counts.set(o.governorate_id, (counts.get(o.governorate_id) ?? 0) + 1);
     }
     return TUNISIAN_GOVERNORATES.map((g) => ({
@@ -32,6 +38,7 @@ export default function OutageMap({
       count: counts.get(g.id) ?? 0,
     }));
   }, [outages]);
+
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -57,11 +64,13 @@ export default function OutageMap({
     mapRef.current = map;
     layerRef.current = L.layerGroup().addTo(map);
     firesLayerRef.current = L.layerGroup().addTo(map);
+    newsLayerRef.current = L.layerGroup().addTo(map);
     return () => {
       map.remove();
       mapRef.current = null;
       layerRef.current = null;
       firesLayerRef.current = null;
+      newsLayerRef.current = null;
     };
   }, []);
 
@@ -126,5 +135,66 @@ export default function OutageMap({
     }
   }, [fires, showFires, lang]);
 
+  // News markers (outages extracted from press articles)
+  useEffect(() => {
+    const map = mapRef.current;
+    const layer = newsLayerRef.current;
+    if (!map || !layer) return;
+    layer.clearLayers();
+    if (!showNews) {
+      if (map.hasLayer(layer)) map.removeLayer(layer);
+      return;
+    }
+    if (!map.hasLayer(layer)) map.addLayer(layer);
+
+    const perGov = new Map<string, number>();
+    for (const o of newsItems) {
+      const gov = TUNISIAN_GOVERNORATES.find((g) => g.id === o.governorate_id);
+      if (!gov) continue;
+      const i = perGov.get(gov.id) ?? 0;
+      perGov.set(gov.id, i + 1);
+      // fan out multiple news items around the governorate centre
+      const angle = (i * 2 * Math.PI) / 5;
+      const r = i === 0 ? 0.16 : 0.16 + 0.05 * i;
+      const lat = (o.latitude ?? gov.latitude + Math.sin(angle) * r) as number;
+      const lon = (o.longitude ?? gov.longitude + Math.cos(angle) * r) as number;
+
+      const icon = L.divIcon({
+        className: "",
+        html: `<div class="news-marker">📰</div>`,
+        iconSize: [26, 26],
+        iconAnchor: [13, 13],
+      });
+      const del = gov.delegations.find((d) => d.id === o.delegation_id);
+      const desc =
+        (lang === "ar" ? o.description_ar || o.description : o.description) ?? "";
+      const title = lang === "ar" ? "خبر صحفي" : "Actualité presse";
+      const link = lang === "ar" ? "قراءة المقال ↗" : "Lire l'article ↗";
+      L.marker([lat, lon], { icon, zIndexOffset: 500 })
+        .addTo(layer)
+        .bindPopup(
+          `<div class="map-pop" dir="${lang === "ar" ? "rtl" : "ltr"}">
+             <div class="map-pop__title map-pop__title--news">📰 ${title}</div>
+             <div class="map-pop__meta"><strong>${del?.name[lang] ?? ""} · ${gov.name[lang]}</strong></div>
+             <div class="map-pop__meta">${escapeHtml(desc)}</div>
+             ${
+               o.source_url
+                 ? `<a class="map-pop__link" href="${o.source_url}" target="_blank" rel="noopener noreferrer">${link}</a>`
+                 : ""
+             }
+           </div>`
+        );
+    }
+  }, [newsItems, showNews, lang]);
+
   return <div ref={containerRef} className="h-full w-full" />;
 }
+
+function escapeHtml(s: string) {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+

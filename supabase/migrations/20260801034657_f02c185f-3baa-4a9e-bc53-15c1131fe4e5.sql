@@ -1,0 +1,5 @@
+UPDATE public.outages SET description_ar = 'عقد رئيس مجلس نواب الشعب جلسة عامة لمناقشة الانشغالات الوطنية المتعلقة بانقطاع الماء والكهرباء في تونس.' WHERE source_url = 'https://www.babnet.net/cadredetail-333581.asp';
+UPDATE public.outages SET description_ar = 'عقد البرلمان التونسي جلسة طارئة لمناقشة أزمة انقطاع الماء والكهرباء التي تعاني منها البلاد.' WHERE source_url = 'https://www.babnet.net/cadredetail-333568.asp';
+UPDATE public.outages SET description_ar = 'مناطق عديدة بولاية المنستير تشهد انقطاعات متكررة وطويلة في مياه الشرب تؤثر على الحياة اليومية خلال موجة الحر.' WHERE source_url = 'https://www.babnet.net/cadredetail-333531.asp';
+UPDATE public.outages SET description_ar = 'وضع خطة طوارئ بصفاقس لضمان استمرارية التزود بالماء الصالح للشراب أمام الاضطرابات الناجمة عن موجة حر غير مسبوقة.' WHERE source_url = 'https://www.babnet.net/cadredetail-333468.asp';
+UPDATE public.outages SET description_ar = 'الهلال الأحمر يتدخل لتوفير الماء الصالح للشراب لعائلات بمنطقتي دوز وسوق الأحد إثر انقطاعات متكررة للماء.' WHERE source_url = 'https://www.babnet.net/cadredetail-333474.asp';

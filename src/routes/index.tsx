@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { AlertTriangle, Droplets, Flame, ThumbsUp, TrendingUp } from "lucide-react";
+import { AlertTriangle, Droplets, Flame, Newspaper, ThumbsUp, TrendingUp } from "lucide-react";
 import { ClientOnlyMap } from "@/components/ClientOnlyMap";
 import { useI18n } from "@/i18n/context";
 import { useOutages } from "@/lib/outages";
@@ -57,11 +57,15 @@ function HomePage() {
   const { t, lang } = useI18n();
   const { outages, stats } = useOutages();
   const [showFires, setShowFires] = useState(true);
+  const [showNews, setShowNews] = useState(true);
   const { fires, updatedAt } = useFires(showFires);
 
+  const newsCount = outages.filter((o) => o.source_url).length;
   const fireLabel = lang === "ar" ? "حرائق نشطة (24س)" : "Feux actifs (24h)";
   const toggleLabel = lang === "ar" ? "الحرائق" : "Feux";
+  const newsToggleLabel = lang === "ar" ? "أخبار" : "Actus";
   const sourceLabel = lang === "ar" ? "المصدر: ناسا FIRMS" : "Source : NASA FIRMS";
+
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 px-4 py-6">
@@ -83,7 +87,7 @@ function HomePage() {
       </header>
 
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Kpi
           label={t.home.activeOutages}
           value={stats.active}
@@ -116,7 +120,7 @@ function HomePage() {
             <Droplets className="h-4 w-4 text-primary" />
             {t.home.liveMap}
           </div>
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <button
               onClick={() => setShowFires((v) => !v)}
               className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
@@ -129,12 +133,30 @@ function HomePage() {
               <Flame className="h-3.5 w-3.5" />
               {toggleLabel} {showFires && fires.length > 0 && `(${fires.length})`}
             </button>
+            <button
+              onClick={() => setShowNews((v) => !v)}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
+                showNews
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border bg-card text-muted-foreground hover:bg-muted"
+              }`}
+              aria-pressed={showNews}
+            >
+              <Newspaper className="h-3.5 w-3.5" />
+              {newsToggleLabel} {newsCount > 0 && `(${newsCount})`}
+            </button>
             <Legend />
           </div>
         </div>
         <div className="h-[420px] w-full sm:h-[520px]">
-          <ClientOnlyMap outages={outages} fires={fires} showFires={showFires} />
+          <ClientOnlyMap
+            outages={outages}
+            fires={fires}
+            showFires={showFires}
+            showNews={showNews}
+          />
         </div>
+
         {showFires && updatedAt && (
           <div className="border-t border-border px-4 py-2 text-[11px] text-muted-foreground">
             {sourceLabel} · {new Date(updatedAt).toLocaleString(lang === "ar" ? "ar-TN" : "fr-TN")}
@@ -224,16 +246,18 @@ function Kpi({
     high: "bg-[oklch(0.68_0.19_45)]/10 text-[oklch(0.55_0.19_45)]",
   }[tone];
   return (
-    <div className="rounded-2xl border border-border bg-card p-4 shadow-card">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+    <div className="rounded-2xl border border-border bg-card p-3 shadow-card sm:p-4">
+      <div className="flex items-start justify-between gap-2">
+        <span className="text-[11px] font-medium uppercase leading-snug tracking-wide text-muted-foreground sm:text-xs">
           {label}
         </span>
-        <span className={`flex h-8 w-8 items-center justify-center rounded-lg ${toneClass}`}>
+        <span
+          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg sm:h-8 sm:w-8 ${toneClass}`}
+        >
           {icon}
         </span>
       </div>
-      <div className="mt-2 text-3xl font-bold tabular-nums">{value}</div>
+      <div className="mt-1.5 text-2xl font-bold tabular-nums sm:text-3xl">{value}</div>
     </div>
   );
 }
