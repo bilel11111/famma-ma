@@ -26,6 +26,7 @@ type ExtractedOutage = {
   delegation_id: string;
   problem_type: "water_cut" | "low_pressure" | "contamination" | "leak";
   description: string;
+  description_ar: string;
   start_time?: string;
 };
 
@@ -113,6 +114,7 @@ async function run() {
     delegation_id: e.delegation_id,
     problem_type: e.problem_type,
     description: e.description.slice(0, 500),
+    description_ar: (e.description_ar || e.description).slice(0, 500),
     reporter_device: "babnet_ai",
     source: "babnet_ai",
     source_url: e.source_url,
@@ -190,13 +192,14 @@ Articles:
 ${articles}
 
 Retourne UNIQUEMENT un JSON valide (aucun texte autour, aucun markdown) de cette forme:
-{"outages":[{"source_url":"...","governorate_id":"...","delegation_id":"...","problem_type":"water_cut","description":"résumé en français 1 phrase"}]}
+{"outages":[{"source_url":"...","governorate_id":"...","delegation_id":"...","problem_type":"water_cut","description":"résumé en français 1 phrase","description_ar":"ملخّص بالعربية في جملة واحدة"}]}
 
 Règles strictes:
 - N'inclus QUE les articles qui parlent réellement d'un problème d'eau en cours ou récent en Tunisie.
 - Ignore les articles politiques, sportifs, ou sans lien avec l'eau potable.
 - governorate_id et delegation_id doivent EXACTEMENT correspondre à la liste ci-dessus.
 - Si tu ne peux pas identifier la délégation, choisis la première délégation du gouvernorat.
+- "description" DOIT être en français et "description_ar" DOIT être en arabe (traduction fidèle du même résumé). Les deux sont obligatoires.
 - Si aucun article n'est pertinent, retourne {"outages":[]}.`;
 
   // Google Generative Language API — direct call with GOOGLE_API_KEY
@@ -267,6 +270,7 @@ Règles strictes:
       delegation_id: delId,
       problem_type: o.problem_type,
       description: (o.description ?? "").trim() || "Signalement extrait d'un article de presse",
+      description_ar: (o.description_ar ?? "").trim() || "بلاغ مستخرج من مقال صحفي",
     });
   }
   return out;
