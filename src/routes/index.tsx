@@ -57,11 +57,15 @@ function HomePage() {
   const { t, lang } = useI18n();
   const { outages, stats } = useOutages();
   const [showFires, setShowFires] = useState(true);
+  const [showNews, setShowNews] = useState(true);
   const { fires, updatedAt } = useFires(showFires);
 
+  const newsCount = outages.filter((o) => o.source_url).length;
   const fireLabel = lang === "ar" ? "حرائق نشطة (24س)" : "Feux actifs (24h)";
   const toggleLabel = lang === "ar" ? "الحرائق" : "Feux";
+  const newsToggleLabel = lang === "ar" ? "أخبار" : "Actus";
   const sourceLabel = lang === "ar" ? "المصدر: ناسا FIRMS" : "Source : NASA FIRMS";
+
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 px-4 py-6">
