@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { AlertTriangle, Droplets, Flame, ThumbsUp, TrendingUp } from "lucide-react";
+import { AlertTriangle, Droplets, Flame, Newspaper, ThumbsUp, TrendingUp } from "lucide-react";
 import { ClientOnlyMap } from "@/components/ClientOnlyMap";
 import { useI18n } from "@/i18n/context";
 import { useOutages } from "@/lib/outages";
