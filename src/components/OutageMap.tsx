@@ -11,20 +11,26 @@ export default function OutageMap({
   outages,
   fires = [],
   showFires = true,
+  showNews = true,
 }: {
   outages: Outage[];
   fires?: Fire[];
   showFires?: boolean;
+  showNews?: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
   const firesLayerRef = useRef<L.LayerGroup | null>(null);
+  const newsLayerRef = useRef<L.LayerGroup | null>(null);
   const { lang } = useI18n();
+
+  const newsItems = useMemo(() => outages.filter((o) => !!o.source_url), [outages]);
 
   const aggregates = useMemo(() => {
     const counts = new Map<string, number>();
     for (const o of outages) {
+      if (o.source_url) continue;
       counts.set(o.governorate_id, (counts.get(o.governorate_id) ?? 0) + 1);
     }
     return TUNISIAN_GOVERNORATES.map((g) => ({
@@ -32,6 +38,7 @@ export default function OutageMap({
       count: counts.get(g.id) ?? 0,
     }));
   }, [outages]);
+
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
