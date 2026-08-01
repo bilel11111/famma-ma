@@ -246,16 +246,18 @@ function Kpi({
     high: "bg-[oklch(0.68_0.19_45)]/10 text-[oklch(0.55_0.19_45)]",
   }[tone];
   return (
-    <div className="rounded-2xl border border-border bg-card p-4 shadow-card">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+    <div className="rounded-2xl border border-border bg-card p-3 shadow-card sm:p-4">
+      <div className="flex items-start justify-between gap-2">
+        <span className="text-[11px] font-medium uppercase leading-snug tracking-wide text-muted-foreground sm:text-xs">
           {label}
         </span>
-        <span className={`flex h-8 w-8 items-center justify-center rounded-lg ${toneClass}`}>
+        <span
+          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg sm:h-8 sm:w-8 ${toneClass}`}
+        >
           {icon}
         </span>
       </div>
-      <div className="mt-2 text-3xl font-bold tabular-nums">{value}</div>
+      <div className="mt-1.5 text-2xl font-bold tabular-nums sm:text-3xl">{value}</div>
     </div>
   );
 }
