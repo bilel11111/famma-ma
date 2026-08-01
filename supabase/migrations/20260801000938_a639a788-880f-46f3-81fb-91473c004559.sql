@@ -1,0 +1,1 @@
+ALTER TABLE public.outages ADD COLUMN IF NOT EXISTS description_ar text;

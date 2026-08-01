@@ -36,15 +36,24 @@ export default function OutageMap({
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
     const map = L.map(containerRef.current, {
-      center: [34.5, 9.5],
+      center: [34.2, 9.6],
       zoom: 6,
-      zoomControl: true,
+      zoomControl: false,
       scrollWheelZoom: true,
+      minZoom: 5,
+      maxBounds: L.latLngBounds([29.5, 6.5], [38.5, 13.5]),
+      maxBoundsViscosity: 0.7,
     });
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "&copy; OpenStreetMap &middot; Fires: NASA FIRMS",
-      maxZoom: 18,
-    }).addTo(map);
+    L.tileLayer(
+      "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+      {
+        attribution: "&copy; OpenStreetMap &middot; CARTO &middot; Fires: NASA FIRMS",
+        maxZoom: 19,
+        subdomains: "abcd",
+      }
+    ).addTo(map);
+    L.control.zoom({ position: "bottomright" }).addTo(map);
+    L.control.scale({ imperial: false, position: "bottomleft" }).addTo(map);
     mapRef.current = map;
     layerRef.current = L.layerGroup().addTo(map);
     firesLayerRef.current = L.layerGroup().addTo(map);
@@ -62,22 +71,24 @@ export default function OutageMap({
     if (!layer) return;
     layer.clearLayers();
     for (const { gov, count } of aggregates) {
-      const size = count === 0 ? 22 : Math.min(56, 24 + count * 4);
+      const size = count === 0 ? 20 : Math.min(58, 26 + count * 4);
       const sev = severityFromCount(count);
       const color = count === 0 ? "oklch(0.75 0.02 220)" : severityColor(sev);
       const opacity = count === 0 ? 0.55 : 1;
       const icon = L.divIcon({
         className: "",
-        html: `<div class="severity-marker" style="width:${size}px;height:${size}px;background:${color};opacity:${opacity}">${count}</div>`,
+        html: `<div class="severity-marker${count >= 5 ? " severity-marker--hot" : ""}" style="width:${size}px;height:${size}px;background:${color};opacity:${opacity}">${count === 0 ? "" : count}</div>`,
         iconSize: [size, size],
         iconAnchor: [size / 2, size / 2],
       });
       const marker = L.marker([gov.latitude, gov.longitude], { icon }).addTo(layer);
       marker.bindPopup(
-        `<div style="font-weight:600;font-size:13px">${gov.name[lang]}</div>
-         <div style="font-size:12px;color:#666">${count} ${
-           lang === "ar" ? "بلاغ" : "signalement" + (count > 1 ? "s" : "")
-         }</div>`
+        `<div class="map-pop" dir="${lang === "ar" ? "rtl" : "ltr"}">
+           <div class="map-pop__title">${gov.name[lang]}</div>
+           <div class="map-pop__meta">${count} ${
+             lang === "ar" ? "بلاغ" : "signalement" + (count > 1 ? "s" : "")
+           }</div>
+         </div>`
       );
     }
   }, [aggregates, lang]);
@@ -106,9 +117,11 @@ export default function OutageMap({
       const conf = lang === "ar" ? "الثقة" : "Confiance";
       const power = lang === "ar" ? "الطاقة" : "Puissance";
       marker.bindPopup(
-        `<div style="font-weight:600;font-size:13px;color:oklch(0.55 0.24 30)">🔥 ${label}</div>
-         <div style="font-size:12px;color:#666">${f.acq_date} ${f.acq_time}</div>
-         <div style="font-size:11px;color:#666">${power}: ${f.frp.toFixed(1)} MW · ${conf}: ${f.confidence}</div>`
+        `<div class="map-pop" dir="${lang === "ar" ? "rtl" : "ltr"}">
+           <div class="map-pop__title map-pop__title--fire">🔥 ${label}</div>
+           <div class="map-pop__meta">${f.acq_date} ${f.acq_time}</div>
+           <div class="map-pop__meta">${power}: ${f.frp.toFixed(1)} MW · ${conf}: ${f.confidence}</div>
+         </div>`
       );
     }
   }, [fires, showFires, lang]);

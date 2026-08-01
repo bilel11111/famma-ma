@@ -92,9 +92,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content: "Live crowd-sourced map of water outages across Tunisia's 24 governorates. Report, confirm, and track cuts, low pressure, contamination and leaks.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Famma Ma" },
+      { property: "og:locale", content: "ar_TN" },
+      { property: "og:locale:alternate", content: "fr_TN" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Famma Ma — Live Water Outage Map for Tunisia" },
       { name: "twitter:description", content: "Live crowd-sourced map of water outages across Tunisia's 24 governorates. Report, confirm, and track cuts, low pressure, contamination and leaks." },
+      {
+        name: "keywords",
+        content:
+          "coupure eau Tunisie, انقطاع الماء تونس, SONEDE, الصوناد, coupure SONEDE aujourd'hui, carte coupure eau, water outage Tunisia, feux Tunisie, حرائق تونس, NASA FIRMS Tunisie, pression eau, eau contaminée, fuite eau Tunis, Sfax, Sousse, Nabeul",
+      },
+      { name: "robots", content: "index, follow, max-image-preview:large" },
+      { name: "author", content: "Famma Ma" },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/2f1a33af-bbf4-47f6-ba3b-a48e06e32328" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/2f1a33af-bbf4-47f6-ba3b-a48e06e32328" },
     ],
@@ -110,8 +120,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
     ],
-
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Famma Ma",
+          alternateName: "فمّا ماء",
+          url: "https://famma-ma.lovable.app",
+          inLanguage: ["ar", "fr"],
+          description:
+            "Carte en temps réel des coupures d'eau en Tunisie et des feux actifs NASA FIRMS.",
+        }),
+      },
+      { src: "https://pl30575722.effectivecpmnetwork.com/6a/bc/ad/6abcad93c87f733645d3e7ddcf495acc.js" },
+      { src: "https://pl30575723.effectivecpmnetwork.com/e7/86/b4/e786b4060919739e2a392898c4423572.js" },
+    ],
   }),
+
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,

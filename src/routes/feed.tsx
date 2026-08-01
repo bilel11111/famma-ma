@@ -25,7 +25,15 @@ export const Route = createFileRoute("/feed")({
         property: "og:description",
         content: "Live water outage reports from every governorate in Tunisia.",
       },
+      { property: "og:url", content: "https://famma-ma.lovable.app/feed" },
+      { property: "og:type", content: "website" },
+      {
+        name: "keywords",
+        content:
+          "flux coupures eau Tunisie, بلاغات انقطاع الماء, SONEDE actualité, signalement eau, الصوناد",
+      },
     ],
+    links: [{ rel: "canonical", href: "https://famma-ma.lovable.app/feed" }],
   }),
   component: FeedPage,
 });
@@ -132,6 +140,8 @@ function FeedItem({
   const gov = getGovernorateById(outage.governorate_id);
   const del = getDelegationById(outage.governorate_id, outage.delegation_id);
   const type = outage.problem_type as ProblemType;
+  const desc =
+    lang === "ar" ? outage.description_ar || outage.description : outage.description;
 
   return (
     <li className="rounded-2xl border border-border bg-card p-4 shadow-card transition-shadow hover:shadow-elevated">
@@ -151,8 +161,20 @@ function FeedItem({
               · {gov?.name[lang] ?? outage.governorate_id}
             </span>
           </div>
-          {outage.description && (
-            <p className="mt-1.5 text-sm text-muted-foreground">{outage.description}</p>
+          {desc && (
+            <p className="mt-1.5 text-sm text-muted-foreground" dir={lang === "ar" ? "rtl" : "ltr"}>
+              {desc}
+            </p>
+          )}
+          {outage.source_url && (
+            <a
+              href={outage.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1.5 inline-block text-[11px] font-medium text-primary hover:underline"
+            >
+              {lang === "ar" ? "المصدر: مقال صحفي ↗" : "Source : article de presse ↗"}
+            </a>
           )}
         </div>
 

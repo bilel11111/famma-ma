@@ -5,6 +5,7 @@ import { ClientOnlyMap } from "@/components/ClientOnlyMap";
 import { useI18n } from "@/i18n/context";
 import { useOutages } from "@/lib/outages";
 import { useFires } from "@/lib/fires";
+import { NativeBanner } from "@/components/NativeBanner";
 import { TUNISIAN_GOVERNORATES, PROBLEM_TYPES, type ProblemType } from "@/data/tunisia-divisions";
 
 export const Route = createFileRoute("/")({
@@ -21,6 +22,31 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content:
           "Live crowd-sourced map of water outages plus NASA FIRMS active fires across Tunisia's 24 governorates.",
+      },
+      { property: "og:url", content: "https://famma-ma.lovable.app/" },
+      { property: "og:type", content: "website" },
+      {
+        name: "keywords",
+        content:
+          "coupure eau Tunisie, انقطاع الماء في تونس, carte SONEDE, الصوناد, feux actifs Tunisie, حرائق تونس, NASA FIRMS, eau potable Tunis Sfax Sousse",
+      },
+    ],
+    links: [{ rel: "canonical", href: "https://famma-ma.lovable.app/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          name: "Famma Ma",
+          url: "https://famma-ma.lovable.app/",
+          applicationCategory: "UtilitiesApplication",
+          operatingSystem: "Web",
+          inLanguage: ["ar", "fr"],
+          offers: { "@type": "Offer", price: "0", priceCurrency: "TND" },
+          description:
+            "Carte temps réel des coupures d'eau en Tunisie et des feux actifs NASA FIRMS.",
+        }),
       },
     ],
   }),
@@ -116,6 +142,8 @@ function HomePage() {
         )}
       </section>
 
+
+      <NativeBanner className="overflow-hidden rounded-2xl border border-border bg-card p-2" />
 
       <div className="grid gap-4 md:grid-cols-2">
         <Card title={t.home.topAffected}>
