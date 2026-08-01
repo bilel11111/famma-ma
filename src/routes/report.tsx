@@ -26,7 +26,15 @@ export const Route = createFileRoute("/report")({
         property: "og:description",
         content: "Report water outages in Tunisia anonymously in seconds.",
       },
+      { property: "og:url", content: "https://famma-ma.lovable.app/report" },
+      { property: "og:type", content: "website" },
+      {
+        name: "keywords",
+        content:
+          "signaler coupure eau Tunisie, الإبلاغ عن انقطاع الماء, SONEDE réclamation, الصوناد شكوى, fuite eau, eau contaminée",
+      },
     ],
+    links: [{ rel: "canonical", href: "https://famma-ma.lovable.app/report" }],
   }),
   component: ReportPage,
 });
