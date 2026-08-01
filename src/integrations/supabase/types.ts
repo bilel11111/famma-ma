@@ -49,6 +49,7 @@ export type Database = {
           created_at: string
           delegation_id: string
           description: string | null
+          description_ar: string | null
           governorate_id: string
           id: string
           latitude: number | null
@@ -64,6 +65,7 @@ export type Database = {
           created_at?: string
           delegation_id: string
           description?: string | null
+          description_ar?: string | null
           governorate_id: string
           id?: string
           latitude?: number | null
@@ -79,6 +81,7 @@ export type Database = {
           created_at?: string
           delegation_id?: string
           description?: string | null
+          description_ar?: string | null
           governorate_id?: string
           id?: string
           latitude?: number | null
