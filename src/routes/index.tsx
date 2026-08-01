@@ -120,7 +120,7 @@ function HomePage() {
             <Droplets className="h-4 w-4 text-primary" />
             {t.home.liveMap}
           </div>
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <button
               onClick={() => setShowFires((v) => !v)}
               className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
@@ -133,12 +133,30 @@ function HomePage() {
               <Flame className="h-3.5 w-3.5" />
               {toggleLabel} {showFires && fires.length > 0 && `(${fires.length})`}
             </button>
+            <button
+              onClick={() => setShowNews((v) => !v)}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
+                showNews
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border bg-card text-muted-foreground hover:bg-muted"
+              }`}
+              aria-pressed={showNews}
+            >
+              <Newspaper className="h-3.5 w-3.5" />
+              {newsToggleLabel} {newsCount > 0 && `(${newsCount})`}
+            </button>
             <Legend />
           </div>
         </div>
         <div className="h-[420px] w-full sm:h-[520px]">
-          <ClientOnlyMap outages={outages} fires={fires} showFires={showFires} />
+          <ClientOnlyMap
+            outages={outages}
+            fires={fires}
+            showFires={showFires}
+            showNews={showNews}
+          />
         </div>
+
         {showFires && updatedAt && (
           <div className="border-t border-border px-4 py-2 text-[11px] text-muted-foreground">
             {sourceLabel} · {new Date(updatedAt).toLocaleString(lang === "ar" ? "ar-TN" : "fr-TN")}
