@@ -25,7 +25,7 @@ export const Route = createFileRoute("/feed")({
         property: "og:description",
         content: "Live water outage reports from every governorate in Tunisia.",
       },
-      { property: "og:url", content: "https://famma-ma.lovable.app/feed" },
+      { property: "og:url", content: "https://github.com/bilel11111/famma-ma/feed" },
       { property: "og:type", content: "website" },
       {
         name: "keywords",
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/feed")({
           "flux coupures eau Tunisie, بلاغات انقطاع الماء, SONEDE actualité, signalement eau, الصوناد",
       },
     ],
-    links: [{ rel: "canonical", href: "https://famma-ma.lovable.app/feed" }],
+    links: [{ rel: "canonical", href: "https://github.com/bilel11111/famma-ma/feed" }],
   }),
   component: FeedPage,
 });

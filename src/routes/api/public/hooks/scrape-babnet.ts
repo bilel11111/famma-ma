@@ -64,7 +64,7 @@ async function run() {
 
   // 1. Fetch RSS
   const rssRes = await fetch("https://www.babnet.net/feed.php", {
-    headers: { "User-Agent": "FammaMa/1.0 (+https://famma-ma.lovable.app)" },
+    headers: { "User-Agent": "FammaMa/1.0 (+https://github.com/bilel11111/famma-ma)" },
   });
   if (!rssRes.ok) throw new Error(`Babnet RSS ${rssRes.status}`);
   const xml = await rssRes.text();

@@ -1,29 +1,51 @@
-# Welcome to our project 
+# Famma Ma
 
-This project was built with [Lovable](https://lovable.dev).
+A Tunisia-focused public information platform for reporting incidents, viewing local alerts, and following community updates.
 
-## Build with Lovable
+## Overview
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Famma Ma presents location-aware information through an accessible interface designed for Tunisian users. The application combines a map of reported events, a reporting flow, an activity feed, multilingual support, and a public RSS ingestion endpoint.
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+## Highlights
 
-## Development
+- Interactive map for viewing reported events and local conditions.
+- Public reporting flow for submitting a new event or incident.
+- Feed view for browsing recent updates.
+- Tunisia-specific geographic divisions and location context.
+- Internationalization support through a centralized translation layer.
+- Public API routes for events and RSS-based ingestion.
+- Responsive interface with mobile-aware components.
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+## Technology
 
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+- React 19 and TypeScript
+- TanStack Start and Vite
+- Tailwind CSS
+- Leaflet for interactive maps
+- Supabase for authentication and data services
+- Zod, date-fns, and Lucide React
+
+## Local development
+
+```bash
+bun install
+bun run dev
 ```
 
-## Built with
+Copy `.env.example` to `.env` and configure the required Supabase and server-side integration values. Keep service credentials server-side and do not commit `.env` files.
 
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+## Project structure
+
+The main user flows are under `src/routes/`, reusable map and reporting components are under `src/components/`, and Tunisian geographic data and translations are maintained in `src/data/` and `src/i18n/`.
+
+## Status
+
+This repository is a portfolio project focused on civic information, maps, localization, and resilient public data flows.
+
+## License
+
+No license has been declared yet. Add a license before accepting contributions or distributing the project.
+
+## Author
+
+**Bilel JM** — [GitHub](https://github.com/bilel11111)

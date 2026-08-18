@@ -23,7 +23,7 @@ export const Route = createFileRoute("/")({
         content:
           "Live crowd-sourced map of water outages plus NASA FIRMS active fires across Tunisia's 24 governorates.",
       },
-      { property: "og:url", content: "https://famma-ma.lovable.app/" },
+      { property: "og:url", content: "https://github.com/bilel11111/famma-ma/" },
       { property: "og:type", content: "website" },
       {
         name: "keywords",
@@ -31,7 +31,7 @@ export const Route = createFileRoute("/")({
           "coupure eau Tunisie, انقطاع الماء في تونس, carte SONEDE, الصوناد, feux actifs Tunisie, حرائق تونس, NASA FIRMS, eau potable Tunis Sfax Sousse",
       },
     ],
-    links: [{ rel: "canonical", href: "https://famma-ma.lovable.app/" }],
+    links: [{ rel: "canonical", href: "https://github.com/bilel11111/famma-ma/" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -39,7 +39,7 @@ export const Route = createFileRoute("/")({
           "@context": "https://schema.org",
           "@type": "WebApplication",
           name: "Famma Ma",
-          url: "https://famma-ma.lovable.app/",
+          url: "https://github.com/bilel11111/famma-ma/",
           applicationCategory: "UtilitiesApplication",
           operatingSystem: "Web",
           inLanguage: ["ar", "fr"],

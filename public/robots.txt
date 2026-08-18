@@ -11,5 +11,3 @@ User-agent: GPTBot
 Allow: /
 
 Disallow: /api/
-
-Sitemap: https://famma-ma.lovable.app/sitemap.xml

@@ -1,5 +1,5 @@
 {
-  "name": "tanstack_start_ts",
+  "name": "famma-ma",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -87,5 +87,6 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
     "vite": "^8.0.16"
-  }
+  },
+  "description": "Tunisia-focused public information platform with incident reporting, maps, and localized feeds."
 }
